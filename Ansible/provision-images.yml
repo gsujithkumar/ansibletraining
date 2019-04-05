@@ -1,0 +1,55 @@
+---
+  - name: This playbook will provision couple of ubuntu and centos containers
+    hosts: localhost
+    vars: 
+      docker_images:
+        - "sujithkumar/ansible-ubuntu"
+        - "sujithkumar/ansible-centos"
+      platfom_dictionary:
+        ubuntu:
+          image: "sujithkumar/ansible-ubuntu"
+          dockerfile: "UbuntuDockerfile"
+        centos:
+          image: "sujithkumar/ansible-centos"
+          dockerfile: "CentOSDockerfile"
+    tasks:
+      - name: Update OS - Install Extra Packages for Enterprise Linux(EPEL) in CentOS
+        when: ansible_distribution == "CentOS"
+        yum: name=epel-release state=latest 
+
+      - name: Install Python package installer utility in CentOS
+        when: ansible_distribution == "CentOS"
+        yum: name=python-pip state=latest
+
+      - name: Update OS & Install Python package installer utility in Ubuntu
+        when: ansible_distribution == "Ubuntu"
+        apt: name=python-pip state=latest update_cache=yes
+
+      - name: Install docker-py third party plugin for Docker support
+        shell: pip install docker-py
+      
+      - name: Delete all containers if there are any 
+        shell: docker rm -f $(docker ps -aq)
+        ignore_errors: yes
+
+      - name: Delete all ansible related docker Images if there are any 
+        shell: docker rmi -f {{item}}
+        ignore_errors: yes  
+        with_items: "{{docker_images}}"      
+
+      - name: "Provision Ubuntu and Cent OS Images "
+        docker_image:
+          name: "{{item.value.image}}"
+          state: build
+          path: .
+          dockerfile: "{{item.value.dockerfile}}"
+        with_dict: "{{platfom_dictionary}}"
+          
+
+      - name: "Provision CentOS Image "
+        docker_image:
+          name: "sujithkumar/ansible-centos"
+          state: build
+          path: .
+          dockerfile: "CentOSDockerfile"     
+                                                                                                                                        

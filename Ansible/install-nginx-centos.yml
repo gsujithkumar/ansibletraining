@@ -1,0 +1,8 @@
+- name: Install Extra Packages for Enterprise Linux(EPEL) in CentOS
+  when: ( ansible_distribution == "CentOS" and ansible_os_family == "RedHat" ) 
+  yum: name=epel-release state=latest 
+
+- name: Install nginx web server in CentOS
+  when: ( ansible_distribution == "CentOS" and ansible_os_family == "RedHat" )
+  yum: name=nginx state=latest 
+

@@ -1,0 +1,8 @@
+---
+- name: Vault Sample
+  hosts: localhost
+  vars_files:
+    - contacts.yml
+  tasks:
+    - debug: msg="{{item.value.name}}"
+      with_dict: "{{contacts}}"

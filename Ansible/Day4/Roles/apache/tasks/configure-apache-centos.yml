@@ -1,0 +1,9 @@
+---
+- name: Configure httpd document root folder in CentOS
+  copy:
+    src: httpd.conf
+    dest: /etc/httpd/conf/httpd.conf
+    backup: yes
+  notify:
+    - Restart the httpd service in CentOS
+...

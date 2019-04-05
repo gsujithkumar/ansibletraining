@@ -1,0 +1,6 @@
+---
+- name: This will ping all the hosts
+  hosts: all
+  tasks:
+    - name: Ping the remote machine
+      ping:

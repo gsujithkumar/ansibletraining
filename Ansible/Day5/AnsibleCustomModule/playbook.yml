@@ -1,0 +1,15 @@
+- name: This playbook will Invoke our ansible custom module
+  hosts: all
+  tasks:
+    - name: Invoke hello module here
+      hello: greeting_msg="Hello...! this message is from custom module"
+      register: output
+
+    - name: Invoke hello module here
+      hello: greeting_msg="Hello...! this message is a second message from custom module"
+      register: output2
+
+
+    - debug: var=output
+
+    - debug: var=output2
